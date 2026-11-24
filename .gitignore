@@ -1,0 +1,23 @@
+# Entorno virtual de Python
+venv/
+.venv/
+env/
+
+# Caché de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Datos generados dinámicamente
+data/pdfs/*.pdf
+data/*.db
+data/*.sqlite3
+
+# Archivos de entorno y del sistema operativo
+.env
+.DS_Store
+Thumbs.db
+
+# Configuraciones de IDEs
+.vscode/
+.idea/
