@@ -1,0 +1,105 @@
+:root {
+    --unison-blanco: #ffffff;
+    --unison-naranja: #FFA41C;
+    --unison-naranja-hover: #e59012;
+    --unison-morado: #553CDF;
+    --unison-morado-oscuro: #422cb8;
+    --fondo-suave: #f7f8fc;
+}
+
+body {
+    background-color: var(--fondo-suave);
+    color: #212529;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+/* navbar principal */
+.navbar-unison {
+    background-color: var(--unison-morado);
+    border-bottom: 4px solid var(--unison-naranja);
+}
+
+.navbar-unison .navbar-brand,
+.navbar-unison .nav-link {
+    color: var(--unison-blanco);
+}
+
+.navbar-unison .nav-link:hover,
+.navbar-unison .nav-link.active {
+    color: var(--unison-naranja);
+    font-weight: 600;
+}
+
+/* botones */
+.btn-unison-primary {
+    background-color: var(--unison-morado);
+    border-color: var(--unison-morado);
+    color: var(--unison-blanco);
+}
+
+.btn-unison-primary:hover {
+    background-color: var(--unison-morado-oscuro);
+    border-color: var(--unison-morado-oscuro);
+    color: var(--unison-blanco);
+}
+
+.btn-unison-accent {
+    background-color: var(--unison-naranja);
+    border-color: var(--unison-naranja);
+    color: #1c1c1c;
+    font-weight: 600;
+}
+
+.btn-unison-accent:hover {
+    background-color: var(--unison-naranja-hover);
+    border-color: var(--unison-naranja-hover);
+    color: #1c1c1c;
+}
+
+/* tarjetas y resultados */
+.card-unison {
+    background-color: var(--unison-blanco);
+    border: 1px solid #e6e8f0;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 8px rgba(85, 60, 223, 0.06);
+}
+
+.result-card {
+    border-left: 5px solid var(--unison-morado);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.result-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(85, 60, 223, 0.12);
+}
+
+.badge-similitud {
+    background-color: var(--unison-naranja);
+    color: #1c1c1c;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.badge-pagina {
+    background-color: var(--unison-morado);
+    color: var(--unison-blanco);
+}
+
+.hero-box {
+    background-color: var(--unison-blanco);
+    border-top: 4px solid var(--unison-morado);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 14px rgba(85, 60, 223, 0.08);
+}
+
+footer {
+    background-color: var(--unison-blanco);
+    border-top: 1px solid #e6e8f0;
+}
