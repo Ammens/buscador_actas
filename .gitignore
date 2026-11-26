@@ -3,12 +3,12 @@ venv/
 .venv/
 env/
 
-# Caché de Python
+# Cache de Python
 __pycache__/
 *.py[cod]
 *$py.class
 
-# Datos generados dinámicamente
+# Datos generados dinamicamente
 data/pdfs/*.pdf
 data/*.db
 data/*.sqlite3
