@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Buscar Actas - UNISON{% endblock %}
+
+{% block content %}
+<div class="hero-box p-4 p-md-5 mb-4">
+    <h1 class="h3 fw-bold mb-2" style="color: #553CDF;">Buscador de Actas en PDF</h1>
+    <p class="text-muted mb-4">
+        Consulta sobre <strong>{{ stats.indexados }}</strong> documento(s) indexado(s)
+        ({{ stats.total_fragmentos }} fragmentos). Tolera variaciones y pequeños errores de escritura mediante similitud de Levenshtein.
+    </p>
+
+    <form method="GET" action="{{ url_for('index') }}" class="row g-2">
+        <div class="col-12 col-md-9">
+            <input
+                type="text"
+                name="q"
+                value="{{ consulta }}"
+                class="form-control form-control-lg"
+                placeholder="Ej. convocatoria covid, consejo divisional, comisiones..."
+                autofocus
+            >
+        </div>
+        <div class="col-12 col-md-3 d-grid">
+            <button type="submit" class="btn btn-unison-primary btn-lg">
+                Buscar
+            </button>
+        </div>
+    </form>
+</div>
+
+{% if mensaje_vacio %}
+    <div class="alert alert-warning" role="alert">
+        {{ mensaje_vacio }}
+    </div>
+{% elif consulta_enviada %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 mb-0">
+            Resultados para: <span style="color: #553CDF;">"{{ consulta }}"</span>
+        </h2>
+        <span class="badge bg-secondary">{{ resultados|length }} coincidencia(s)</span>
+    </div>
+
+    {% if resultados %}
+        <div class="d-flex flex-column gap-3">
+            {% for r in resultados %}
+                <div class="card card-unison result-card">
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                            <h3 class="h6 fw-bold mb-0" style="color: #553CDF;">
+                                {{ r.titulo_enlace }}
+                            </h3>
+                            <div class="d-flex gap-2">
+                                <span class="badge badge-pagina">Pág. {{ r.numero_pagina }}</span>
+                                <span class="badge badge-similitud">Similitud: {{ r.porcentaje }}%</span>
+                            </div>
+                        </div>
+
+                        <p class="card-text text-dark mb-3" style="line-height: 1.6;">
+                            {{ r.texto_original }}
+                        </p>
+
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 border-top pt-2">
+                            <a href="{{ r.url_origen }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-unison-accent">
+                                Abrir PDF original
+                            </a>
+                            <small class="text-muted text-truncate" style="max-width: 65%;">
+                                {{ r.url_origen }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card card-unison p-4 text-center">
+            <h3 class="h5 mb-2">No se encontraron coincidencias relevantes</h3>
+            <p class="text-muted mb-0">
+                Intenta con otras palabras clave o revisa si hay documentos nuevos por descargar e indexar en la sección
+                <a href="{{ url_for('estado_sistema') }}">Estado e Índice</a>.
+            </p>
+        </div>
+    {% endif %}
+{% endif %}
+{% endblock %}

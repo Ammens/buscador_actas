@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}URLs Semilla - UNISON{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-12 col-lg-5">
+        <div class="card card-unison p-4">
+            <h1 class="h5 fw-bold mb-3" style="color: #553CDF;">Agregar nueva URL para escanear</h1>
+            <p class="text-muted small">
+                Las URLs registradas se guardan de forma persistente en la base de datos SQLite y se utilizarán en futuras ejecuciones del scraper.
+            </p>
+
+            <form method="POST" action="{{ url_for('gestionar_urls') }}">
+                <div class="mb-3">
+                    <label for="url" class="form-label fw-semibold">URL de destino</label>
+                    <input
+                        type="url"
+                        class="form-control"
+                        id="url"
+                        name="url"
+                        placeholder="https://fi-ing.unison.mx/..."
+                        required
+                    >
+                </div>
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label fw-semibold">Descripción (opcional)</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="descripcion"
+                        name="descripcion"
+                        placeholder="Ej. Actas Consejo Divisional"
+                    >
+                </div>
+                <button type="submit" class="btn btn-unison-primary w-100">
+                    Guardar URL
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-7">
+        <div class="card card-unison p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="h5 fw-bold mb-0" style="color: #553CDF;">URLs registradas ({{ urls|length }})</h2>
+                <form method="POST" action="{{ url_for('ejecutar_accion', tipo='todo') }}">
+                    <button type="submit" class="btn btn-sm btn-unison-accent">
+                        Escanear e Indexar ahora
+                    </button>
+                </form>
+            </div>
+
+            {% if urls %}
+                <div class="list-group list-group-flush">
+                    {% for item in urls %}
+                        <div class="list-group-item px-0">
+                            <div class="fw-semibold text-break">
+                                <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer" style="color: #553CDF;">
+                                    {{ item.url }}
+                                </a>
+                            </div>
+                            {% if item.descripcion %}
+                                <div class="small text-muted">{{ item.descripcion }}</div>
+                            {% endif %}
+                            <div class="small text-secondary mt-1">Agregada: {{ item.fecha_agregada }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">No hay URLs registradas todavía.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
