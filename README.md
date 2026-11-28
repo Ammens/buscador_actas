@@ -18,8 +18,8 @@ El objetivo es facilitar la localización de información dentro de las actas of
 ### Pasos de instalación
 1. Clonar el repositorio:
    ```bash
-   git clone [https://github.com/Ammens/buscador_actas_unison.git](https://github.com/Ammens/buscador_actas_unison.git)
-   cd buscador_actas_unison
+   git clone https://github.com/Ammens/buscador_actas.git
+   cd buscador_actas
    ```
 
 2. Crear y activar el entorno virtual:
@@ -51,7 +51,7 @@ No es necesario modificar el código fuente para agregar nuevas fuentes de escan
 * **Desde la interfaz web:** Ir a la pestaña **URLs Semilla** (`/urls`), ingresar la nueva dirección (`http://` o `https://`) junto con una descripción opcional y presionar **Guardar URL**. Luego hacer clic en **Escanear e Indexar ahora**.
 * **Desde la terminal (CLI):**
   ```bash
-  python cli.py add-url "[https://ejemplo.unison.mx/actas-nuevas/](https://ejemplo.unison.mx/actas-nuevas/)" -d "Actas adicionales"
+  python cli.py add-url "https://ejemplo.unison.mx/actas-nuevas/" -d "Actas adicionales"
   python cli.py update
   ```
 Todas las URLs agregadas se almacenan de forma persistente en la tabla `urls_semilla` de SQLite.
@@ -93,7 +93,7 @@ El motor de búsqueda (`core/search.py`) utiliza `Levenshtein.ratio`:
 ### Limitaciones conocidas
 * Los documentos PDF compuestos únicamente por imágenes escaneadas sin capa de texto no pueden ser indexados automáticamente (se identifican y reportan en la vista `/estado` con estado `sin_texto`).
 * En sitios con cientos de PDFs, la primera ejecución del scraping puede tomar varios minutos debido a las pausas de cortesía entre peticiones.
-* Por defecto, el scraper limita la descarga a 30 PDFs por URL semilla para mantener tiempos ágiles de ejecución y búsqueda en entornos locales; este límite puede ampliarse directamente en config.py `MAX_PDFS_POR_SEMILLA`.
+* Por defecto, el scraper limita la descarga a 30 PDFs por URL semilla para mantener tiempos ágiles de ejecución y búsqueda en entornos locales; este límite puede ampliarse directamente en `config.py` `MAX_PDFS_POR_SEMILLA`.
 
 ### Extras implementados
 * **Interfaz profesional adaptable (Bootstrap 5):** Diseño responsivo con la paleta institucional de la UNISON (`#FFFFFF`, `#FFA41C`, `#553CDF`).
