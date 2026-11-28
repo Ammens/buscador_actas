@@ -12,8 +12,10 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-unison shadow-sm">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">
-                Buscador de Actas <span style="color: #FFA41C;">UNISON</span>
+            <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='img/buho.png') }}" alt="Búho UNISON" height="36"
+                    class="d-inline-block">
+                <span>Buscador de Actas <span style="color: #FFA41C;">UNISON</span></span>
             </a>
             <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse"
                 data-bs-target="#menuPrincipal">
