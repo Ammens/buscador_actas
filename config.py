@@ -19,6 +19,7 @@ DESCRIPCION_INICIAL = "Portal de actas de la Facultad Interdiciplinaria de Ingen
 # limites y cortesia del scraper
 MAX_PROFUNDIDAD = 3
 MAX_PAG_POR_SEMILLA = 50
+MAX_PDFS_POR_SEMILLA = 30    # limite de PDFs a procesar por cada URL semilla
 PAUSA_ENTRE_PETICIONES = 1.0
 TIMEOUT_PETICION = 15
 

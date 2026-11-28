@@ -77,7 +77,7 @@ El sistema utiliza una base de datos **SQLite** (`data/actas.db`) y una carpeta 
   * `fragmentos`: Almacena el texto extraído dividido en bloques (~450 caracteres) con su `numero_pagina`, `texto_original` y `texto_normalizado`.
 * **Prevención de duplicados:** Antes de descargar, se verifica que `url_origen` exista en SQLite y que el archivo físico siga presente en `data/pdfs/`. Si ya existe, se omite.
 * **Prevención de colisiones de nombres:** Cada archivo se guarda con un prefijo hash MD5 de 8 caracteres derivado de su URL original (`<hash>_<nombre_limpio>.pdf`), evitando que dos documentos distintos con el mismo nombre se sobrescriban.
-* **Control del crawler:** Se implementa búsqueda en anchura (BFS) con límite de profundidad (`MAX_PROFUNDIDAD = 3`), límite de páginas por semilla (`MAX_PAGINAS_POR_SEMILLA = 50`), filtro de dominio/rutas pertinentes y pausas entre peticiones (`1.0 s`).
+* **Control del crawler**: Se implementa búsqueda en anchura (BFS) con límite de profundidad `MAX_PROFUNDIDAD = 3`, límite de páginas por semilla `MAX_PAGINAS_POR_SEMILLA = 50`, tope de documentos por semilla (`MAX_PDFS_POR_SEMILLA = 30`, configurable en `config.py`), filtro de dominio/rutas pertinentes y pausas entre peticiones (1.0 s).
 
 ## 7. Criterio de similitud y ordenamiento
 El motor de búsqueda (`core/search.py`) utiliza `Levenshtein.ratio`:
@@ -93,6 +93,7 @@ El motor de búsqueda (`core/search.py`) utiliza `Levenshtein.ratio`:
 ### Limitaciones conocidas
 * Los documentos PDF compuestos únicamente por imágenes escaneadas sin capa de texto no pueden ser indexados automáticamente (se identifican y reportan en la vista `/estado` con estado `sin_texto`).
 * En sitios con cientos de PDFs, la primera ejecución del scraping puede tomar varios minutos debido a las pausas de cortesía entre peticiones.
+* Por defecto, el scraper limita la descarga a 30 PDFs por URL semilla para mantener tiempos ágiles de ejecución y búsqueda en entornos locales; este límite puede ampliarse directamente en config.py `MAX_PDFS_POR_SEMILLA`.
 
 ### Extras implementados
 * **Interfaz profesional adaptable (Bootstrap 5):** Diseño responsivo con la paleta institucional de la UNISON (`#FFFFFF`, `#FFA41C`, `#553CDF`).

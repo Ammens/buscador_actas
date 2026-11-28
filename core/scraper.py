@@ -13,6 +13,7 @@ from config import (
     PDF_DIR,
     MAX_PROFUNDIDAD,
     MAX_PAG_POR_SEMILLA,
+    MAX_PDFS_POR_SEMILLA,
     PAUSA_ENTRE_PETICIONES,
     TIMEOUT_PETICION,
 )
@@ -29,18 +30,15 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0 (compatible; BuscadorActasUNISON/1.0; +ProyectoAcademico)"
 }
 
-
 def normalizar_url(url: str) -> str:
     """Elimina fragmentos (#seccion) y espacios en blanco de una URL."""
     parsed = urlparse(url.strip())
     return parsed._replace(fragment="").geturl()
 
-
 def es_url_pdf(url: str) -> bool:
     """Determina si la ruta de la URL apunta a un archivo PDF."""
     path = urlparse(url).path.lower()
     return path.endswith(".pdf")
-
 
 def generar_nombre_unico(url_pdf: str) -> str:
     """
@@ -97,7 +95,6 @@ def es_enlace_pertinente(url_destino: str, url_semilla: str) -> bool:
     palabras_clave = ("acta", "sesion", "consejo", "acuerdo", "minuta", "colegiado")
     return any(palabra in ruta_dest for palabra in palabras_clave)
 
-
 def documento_ya_disponible(url_pdf: str) -> bool:
     """
     Verifica en SQLite si la URL ya fue descargada y si el archivo fisico
@@ -117,7 +114,6 @@ def documento_ya_disponible(url_pdf: str) -> bool:
 
     ruta_fisica = BASE_DIR / row["ruta_local"]
     return ruta_fisica.exists() and ruta_fisica.stat().st_size > 0
-
 
 def registrar_documento(
     url_origen: str,
@@ -147,7 +143,6 @@ def registrar_documento(
             (url_origen, titulo_enlace, nombre_archivo_local, ruta_local, estado, mensaje),
         )
         conn.commit()
-
 
 def descargar_pdf(session: requests.Session, url_pdf: str, titulo_enlace: str) -> str:
     """
@@ -226,8 +221,13 @@ def ejecutar_scraping() -> dict:
         cola = deque([(url_inicial, 0)])
         visitadas = {url_inicial}
         paginas_esta_semilla = 0
+        pdfs_esta_semilla = 0
 
-        while cola and paginas_esta_semilla < MAX_PAG_POR_SEMILLA:
+        while (
+            cola 
+            and paginas_esta_semilla < MAX_PAG_POR_SEMILLA
+            and pdfs_esta_semilla < MAX_PDFS_POR_SEMILLA
+        ):
             url_actual, profundidad = cola.popleft()
 
             try:
@@ -266,8 +266,14 @@ def ejecutar_scraping() -> dict:
 
                 # es un enlace a PDF
                 if es_url_pdf(url_completa):
+                    if pdfs_esta_semilla >= MAX_PDFS_POR_SEMILLA:
+                        print(f"  [LÍMITE] Se alcanzó el tope de {MAX_PDFS_POR_SEMILLA} PDFs para esta semilla.")
+                        break
+
                     titulo = texto_enlace or Path(unquote(urlparse(url_completa).path)).name
                     resultado = descargar_pdf(session, url_completa, titulo)
+                    pdfs_esta_semilla += 1
+
                     if resultado == "descargado":
                         resumen["descargados"] += 1
                     elif resultado == "omitido":
