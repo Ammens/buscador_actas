@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Estado e Índice - UNISON{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <h1 class="h4 fw-bold mb-0" style="color: #553CDF;">Estado de Recopilación e Indexación</h1>
+    <div class="d-flex flex-wrap gap-2">
+        <form method="POST" action="{{ url_for('ejecutar_accion', tipo='scraping') }}">
+            <button type="submit" class="btn btn-unison-primary btn-sm">1. Ejecutar Scraping</button>
+        </form>
+        <form method="POST" action="{{ url_for('ejecutar_accion', tipo='indexar') }}">
+            <button type="submit" class="btn btn-unison-primary btn-sm">2. Indexar Pendientes</button>
+        </form>
+        <form method="POST" action="{{ url_for('ejecutar_accion', tipo='todo') }}">
+            <button type="submit" class="btn btn-unison-accent btn-sm">Actualizar Todo</button>
+        </form>
+    </div>
+</div>
+
+<!-- tarjetas de resumen -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card card-unison p-3 text-center">
+            <div class="small text-muted">PDFs Indexados</div>
+            <div class="h3 fw-bold mb-0" style="color: #553CDF;">{{ stats.indexados }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card card-unison p-3 text-center">
+            <div class="small text-muted">Fragmentos</div>
+            <div class="h3 fw-bold mb-0" style="color: #553CDF;">{{ stats.total_fragmentos }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card card-unison p-3 text-center">
+            <div class="small text-muted">Pendientes</div>
+            <div class="h3 fw-bold mb-0" style="color: #FFA41C;">{{ stats.pendientes }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card card-unison p-3 text-center">
+            <div class="small text-muted">Sin texto / Error</div>
+            <div class="h3 fw-bold mb-0 text-danger">{{ stats.sin_texto + stats.errores_descarga }}</div>
+        </div>
+    </div>
+</div>
+
+<!-- reporte de PDFs donde el texto no pudo extraerse o fallaron -->
+<div class="card card-unison p-4 mb-4">
+    <h2 class="h5 fw-bold mb-3 text-danger">
+        Reporte de PDFs sin texto extraíble o con error ({{ problematicos|length }})
+    </h2>
+    {% if problematicos %}
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Documento</th>
+                    <th>Estado</th>
+                    <th>Detalle</th>
+                    <th>Enlace</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doc in problematicos %}
+                <tr>
+                    <td class="fw-semibold">{{ doc.titulo_enlace }}</td>
+                    <td><span class="badge bg-danger">{{ doc.estado_extraccion }}</span></td>
+                    <td class="small text-muted">{{ doc.mensaje_estado }}</td>
+                    <td>
+                        <a href="{{ doc.url_origen }}" target="_blank" rel="noopener noreferrer"
+                            class="btn btn-sm btn-outline-secondary">
+                            Ver URL
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted mb-0">No se han detectado documentos sin texto o con errores de descarga.</p>
+    {% endif %}
+</div>
+
+<!-- listado de documentos indexados -->
+<div class="card card-unison p-4">
+    <h2 class="h5 fw-bold mb-3" style="color: #553CDF;">
+        Documentos indexados correctamente ({{ documentos_indexados|length }})
+    </h2>
+    {% if documentos_indexados %}
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Nombre del Acta</th>
+                    <th>Fragmentos</th>
+                    <th>Fecha</th>
+                    <th>PDF Original</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doc in documentos_indexados %}
+                <tr>
+                    <td class="fw-semibold">{{ doc.titulo_enlace }}</td>
+                    <td><span class="badge badge-pagina">{{ doc.num_fragmentos }}</span></td>
+                    <td class="small text-muted">{{ doc.fecha_descarga }}</td>
+                    <td>
+                        <a href="{{ doc.url_origen }}" target="_blank" rel="noopener noreferrer"
+                            class="btn btn-sm btn-unison-accent">
+                            Abrir
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted mb-0">Aún no hay documentos indexados.</p>
+    {% endif %}
+</div>
+{% endblock %}
